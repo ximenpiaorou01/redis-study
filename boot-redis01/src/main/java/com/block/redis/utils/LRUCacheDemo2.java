@@ -1,5 +1,10 @@
 package com.block.redis.utils;
 
+import org.springframework.cglib.proxy.Enhancer;
+import org.springframework.cglib.proxy.MethodInterceptor;
+import org.springframework.cglib.proxy.MethodProxy;
+
+import java.lang.reflect.Method;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -118,27 +123,48 @@ public class LRUCacheDemo2 {
 
     }
 
+    static class DDD{
+
+    }
 
     public static void main(String[] args) {
-        LRUCacheDemo2 lruCacheDemo2 = new LRUCacheDemo2(5);
-        lruCacheDemo2.put(1,1);
-        lruCacheDemo2.put(2,2);
-        lruCacheDemo2.put(3,3);
-        lruCacheDemo2.put(4,4);
-        lruCacheDemo2.put(5,5);
-        System.out.println(lruCacheDemo2.map.keySet());
-        lruCacheDemo2.put(6,6);
-        System.out.println(lruCacheDemo2.map.keySet());
-        lruCacheDemo2.put(3,3);
-        System.out.println(lruCacheDemo2.map.keySet());
-        lruCacheDemo2.put(3,3);
-        System.out.println(lruCacheDemo2.map.keySet());
-        lruCacheDemo2.put(3,3);
-        System.out.println(lruCacheDemo2.map.keySet());
-        lruCacheDemo2.put(7,7);
-        System.out.println(lruCacheDemo2.map.keySet());
+//        LRUCacheDemo2 lruCacheDemo2 = new LRUCacheDemo2(5);
+//        lruCacheDemo2.put(1,1);
+//        lruCacheDemo2.put(2,2);
+//        lruCacheDemo2.put(3,3);
+//        lruCacheDemo2.put(4,4);
+//        lruCacheDemo2.put(5,5);
+//        System.out.println(lruCacheDemo2.map.keySet());
+//        lruCacheDemo2.put(6,6);
+//        System.out.println(lruCacheDemo2.map.keySet());
+//        lruCacheDemo2.put(3,3);
+//        System.out.println(lruCacheDemo2.map.keySet());
+//        lruCacheDemo2.put(3,3);
+//        System.out.println(lruCacheDemo2.map.keySet());
+//        lruCacheDemo2.put(3,3);
+//        System.out.println(lruCacheDemo2.map.keySet());
+//        lruCacheDemo2.put(7,7);
+//        System.out.println(lruCacheDemo2.map.keySet());
 
-
+        int i=0;
+        try {
+            while (true){
+                i++;
+                Enhancer enhancer=new Enhancer();
+                enhancer.setSuperclass(DDD.class);
+                enhancer.setUseCache(false);
+                enhancer.setCallback(new MethodInterceptor() {
+                    @Override
+                    public Object intercept(Object o, Method method, Object[] objects, MethodProxy methodProxy) throws Throwable {
+                        return methodProxy.invokeSuper(o,objects);
+                    }
+                });
+                enhancer.create();
+            }
+        }catch (Throwable e){
+            System.out.println("******多少次后发送异常："+i);
+            e.printStackTrace();
+        }
     }
 
 }
